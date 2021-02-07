@@ -1,6 +1,15 @@
 import Messages from "../model/schema.js";
 
-//post data
+export const addRooms = async (req, res) => {
+  try {
+    const roomName = req.body;
+    const room = Messages(roomName);
+    await room.save();
+    res.status(201).json(room);
+  } catch (error) {
+    res.status(500).json({ Messages: error });
+  }
+};
 
 export const postMessage = async (req, res) => {
   try {

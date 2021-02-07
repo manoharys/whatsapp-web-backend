@@ -27,16 +27,20 @@ const pusher = new Pusher({
 const database = mongoose.connection;
 
 database.once("open", () => {
-  const msgCollection = database.collection("messagecontents");
+  const msgCollection = database.collection("rooms");
   const changeStream = msgCollection.watch();
 
   changeStream.on("change", (change) => {
     console.log(change);
-    const messageDetails = change.fullDocument;
-    pusher.trigger("messages", "inserted", {
-      name: messageDetails.name,
-      message: messageDetails.message,
-    });
+    if (change.operationType === "insert") {
+      const messageDetails = change.fullDocument;
+      pusher.trigger("messages", "inserted", {
+        name: messageDetails.name,
+        message: messageDetails.message,
+      });
+    } else {
+      console.log("Error Triggering pusher");
+    }
   });
 });
 
