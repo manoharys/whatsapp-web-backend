@@ -31,7 +31,7 @@ database.once("open", () => {
   const changeStream = msgCollection.watch();
 
   changeStream.on("change", (change) => {
-    //console.log(change);
+    console.log(change);
     const messageDetails = change.fullDocument;
     pusher.trigger("messages", "inserted", {
       name: messageDetails.name,
