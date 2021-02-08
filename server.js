@@ -35,8 +35,14 @@ database.once("open", () => {
     if (change.operationType === "insert") {
       const messageDetails = change.fullDocument;
       pusher.trigger("messages", "inserted", {
-        name: messageDetails.name,
-        message: messageDetails.message,
+        roomName: messageDetails.name,
+        roomId : messageDetails._id,
+        message: messageDetails.roomMessages[0]['message'],
+        name: messageDetails.roomMessages[0]['name'],
+        date: messageDetails.roomMessages[0]['date'],
+        messageId: messageDetails.roomMessages[0]['_id'],
+         
+      
       });
     } else {
       console.log("Error Triggering pusher");
