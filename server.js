@@ -36,11 +36,16 @@ database.once("open", () => {
       const messageDetails = change.fullDocument;
       pusher.trigger("messages", "inserted", {
         roomName: messageDetails.name,
-        roomId : messageDetails._id,
-        message: messageDetails.roomMessages[0]['message'],
-        name: messageDetails.roomMessages[0]['name'],
-        date: messageDetails.roomMessages[0]['date'],
-        messageId: messageDetails.roomMessages[0]['_id'],     
+        roomId: messageDetails._id,
+        message: messageDetails.roomMessages[0]["message"],
+        name: messageDetails.roomMessages[0]["name"],
+        date: messageDetails.roomMessages[0]["date"],
+        messageId: messageDetails.roomMessages[0]["_id"],
+      });
+    } else if (change.operationType === "update") {
+      const messageDetails = change.updateDescription.updatedFields;
+      pusher.trigger("message", "updated", {
+        data: messageDetails,
       });
     } else {
       console.log("Error Triggering pusher");
