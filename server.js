@@ -40,9 +40,7 @@ database.once("open", () => {
         message: messageDetails.roomMessages[0]['message'],
         name: messageDetails.roomMessages[0]['name'],
         date: messageDetails.roomMessages[0]['date'],
-        messageId: messageDetails.roomMessages[0]['_id'],
-         
-      
+        messageId: messageDetails.roomMessages[0]['_id'],     
       });
     } else {
       console.log("Error Triggering pusher");

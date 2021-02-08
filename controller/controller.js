@@ -1,5 +1,6 @@
 import Rooms from "../model/schema.js";
 import mongoose from "mongoose";
+import { db } from "../database/database.js";
 const { Types } = mongoose;
 
 export const addRooms = async (req, res) => {
@@ -22,38 +23,35 @@ export const getRooms = async (req, res) => {
   }
 };
 
-export const getSingleRoom =  (req, res) => {
+export const getSingleRoom = (req, res) => {
+  const id = req.params.id;
+  //console.log(id);
+  if (!Types.ObjectId.isValid(id)) {
+    return res.status(400).send("couldn't find data with " + req.params.id);
+  }
+  Rooms.findById(id, function (err, data) {
+    if (err) res.send(err);
+    res.json(data);
+  });
+};
 
-    const id = req.params.id;
-    console.log(id);
-    if (!Types.ObjectId.isValid(id)) {
-      return res.status(400).send("couldn't find data with " + req.params.id);
+export const addMessages = (req, res) => {
+  const id = req.params.id;
+  console.log("id", id);
+  if (!Types.ObjectId.isValid(id)) {
+    return res.status(400).send("couldn't find data with " + req.params.id);
+  }
+  const messageBody = req.body;
+  console.log("body", messageBody);
+  Rooms.findOneAndUpdate(
+    { _id: id },
+    { $push: { roomMessages: messageBody } },
+    (error, success) => {
+      if (error) {
+        console.log(error);
+      } else {
+        res.json(success);
+      }
     }
-    Rooms.findById(id, function(err, workout) {
-      if (err)
-          res.send(err)
-      res.json(workout);
-  })
-    
-   
-};
-
-export const postMessage = async (req, res) => {
-  try {
-    const postData = req.body;
-    const posts = Rooms(postData);
-    await posts.save();
-    res.status(201).json(posts);
-  } catch (error) {
-    res.status(500).json({ Messages: error });
-  }
-};
-
-export const getMessages = async (req, res) => {
-  try {
-    const rooms = await rooms.Rooms();
-    res.status(200).json(rooms);
-  } catch (error) {
-    res.status(500).json(error);
-  }
+  );
 };
